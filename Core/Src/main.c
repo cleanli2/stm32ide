@@ -65,6 +65,7 @@ static void MX_GPIO_Init(void);
 static void MX_USART1_UART_Init(void);
 static void MX_SPI1_Init(void);
 void StartDefaultTask(void *argument);
+#define myprintf printk
 
 /* USER CODE BEGIN PFP */
 void printk(const char*, ...);
@@ -109,8 +110,22 @@ int main(void)
   MX_SPI1_Init();
   /* USER CODE BEGIN 2 */
 
-  HAL_UART_Transmit(&huart1, "hello", 5, -1);
 
+
+  myprintf("\r\n~ SD card demo by kiwih ~\r\n\r\n");
+  HAL_Delay(1000); //a short delay is important to let the SD card settle
+
+    //some variables for FatFs
+    FATFS FatFs; 	//Fatfs handle
+    FIL fil; 		//File handle
+    FRESULT fres; //Result after operations
+
+    //Open the file system
+    fres = f_mount(&FatFs, "", 1); //1=mount now
+    if (fres != FR_OK) {
+  	myprintf("f_mount error (%i)\r\n", fres);
+  	while(1);
+    }
   /* USER CODE END 2 */
 
   /* Init scheduler */
@@ -332,6 +347,7 @@ void printk(const char *fmt, ...) {
 void StartDefaultTask(void *argument)
 {
   /* USER CODE BEGIN 5 */
+	static int count=0;
   /* Infinite loop */
   for(;;)
   {
