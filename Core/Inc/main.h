@@ -54,6 +54,10 @@ void Error_Handler(void);
 
 /* USER CODE BEGIN EFP */
 
+/* USER CODE BEGIN Private defines */
+#define SD_SPI_HANDLE hspi1
+/* USER CODE END Private defines */
+
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
