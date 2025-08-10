@@ -144,6 +144,57 @@ int main(void)
 
     myprintf("SD card stats:\r\n%10lu KiB total drive space.\r\n%10lu KiB available.\r\n", total_sectors / 2, free_sectors / 2);
 
+    //Read 30 bytes from "test.txt" on the SD card
+    BYTE readBuf[30];
+
+    //Now let's try to open file "test.txt"
+    fres = f_open(&fil, "test.txt", FA_READ);
+    if (fres == FR_OK) {
+        myprintf("I was able to open 'test.txt' for reading!\r\n");
+
+        //We can either use f_read OR f_gets to get data out of files
+        //f_gets is a wrapper on f_read that does some string formatting for us
+        TCHAR* rres = f_gets((TCHAR*)readBuf, 30, &fil);
+        if(rres != 0) {
+            myprintf("Read string from 'test.txt' contents: %s\r\n", readBuf);
+        } else {
+            myprintf("f_gets error (%i)\r\n", fres);
+        }
+
+        //Be a tidy kiwi - don't forget to close your file!
+        f_close(&fil);
+    }
+    else{
+        myprintf("f_open error (%i)\r\n", fres);
+        //while(1);
+    }
+#if 0
+    //Now let's try and write a file "write.txt"
+    fres = f_open(&fil, "write.txt", FA_WRITE | FA_OPEN_ALWAYS | FA_CREATE_ALWAYS);
+    if(fres == FR_OK) {
+        myprintf("I was able to open 'write.txt' for writing\r\n");
+
+        //Copy in a string
+        strncpy((char*)readBuf, "a new file is made!", 19);
+        UINT bytesWrote;
+        fres = f_write(&fil, readBuf, 19, &bytesWrote);
+        if(fres == FR_OK) {
+            myprintf("Wrote %i bytes to 'write.txt'!\r\n", bytesWrote);
+        } else {
+            myprintf("f_write error (%i)\r\n", fres);
+        }
+
+        //Be a tidy kiwi - don't forget to close your file!
+        f_close(&fil);
+    } else {
+        myprintf("f_open error (%i)\r\n", fres);
+    }
+#endif
+    //We're done, so de-mount the drive
+    myprintf("umount\r\n");
+    f_mount(NULL, "", 0);
+
+
   /* USER CODE END 2 */
 
   /* Init scheduler */
