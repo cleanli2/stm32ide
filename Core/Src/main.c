@@ -168,7 +168,7 @@ int main(void)
         myprintf("f_open error (%i)\r\n", fres);
         //while(1);
     }
-#if 0
+#if 1
     //Now let's try and write a file "write.txt"
     fres = f_open(&fil, "write.txt", FA_WRITE | FA_OPEN_ALWAYS | FA_CREATE_ALWAYS);
     if(fres == FR_OK) {

@@ -37,6 +37,7 @@
 #include "ff_gen_drv.h"
 #include "user_diskio_spi.h"
 
+void printk(const char*, ...);
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
 
@@ -116,6 +117,7 @@ DRESULT USER_read (
 )
 {
   /* USER CODE BEGIN READ */
+    printk("sdread sec=%d, count=%d\r\n", sector, count);
 	return USER_SPI_read(pdrv, buff, sector, count);
   /* USER CODE END READ */
 }
@@ -138,6 +140,7 @@ DRESULT USER_write (
 {
   /* USER CODE BEGIN WRITE */
   /* USER CODE HERE */
+    printk("sdwrite sec=%d, count=%d\r\n", sector, count);
 	return USER_SPI_write(pdrv, buff, sector, count);
   /* USER CODE END WRITE */
 }
