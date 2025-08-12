@@ -145,7 +145,7 @@ int main(void)
     myprintf("SD card stats:\r\n%10lu KiB total drive space.\r\n%10lu KiB available.\r\n", total_sectors / 2, free_sectors / 2);
 
     //Read 30 bytes from "test.txt" on the SD card
-    BYTE readBuf[30];
+    BYTE readBuf[512];
 
     //Now let's try to open file "test.txt"
     fres = f_open(&fil, "test.txt", FA_READ);
@@ -160,6 +160,33 @@ int main(void)
         } else {
             myprintf("f_gets error (%i)\r\n", fres);
         }
+
+        //Be a tidy kiwi - don't forget to close your file!
+        f_close(&fil);
+    }
+    else{
+        myprintf("f_open error (%i)\r\n", fres);
+        //while(1);
+    }
+
+    UINT rlen, ttl=0;
+    //Now let's try to open file "V0/yuv0.bin"
+    fres = f_open(&fil, "V0/yuv0.bin", FA_READ);
+    if (fres == FR_OK) {
+        myprintf("second open ok!\r\n");
+
+        uint32_t tickstart=HAL_GetTick();
+        while(1){
+            f_read(&fil, readBuf, 512, &rlen);
+            ttl+=rlen;
+            if(rlen == 512) {
+                //myprintf(">");
+            } else {
+                myprintf("end of file, total len %d\r\n", ttl);
+                break;
+            }
+        }
+        myprintf("time used:%dms\r\n", HAL_GetTick()-tickstart);
 
         //Be a tidy kiwi - don't forget to close your file!
         f_close(&fil);
@@ -423,7 +450,7 @@ void StartDefaultTask(void *argument)
     osDelay(1000);
     HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_14|GPIO_PIN_15);
     //HAL_UART_Transmit(&huart1, "U", 1, -1);
-    printk("hello %d\r\n", count++);
+    //printk("hello %d\r", count++);
   }
   /* USER CODE END 5 */
 }
