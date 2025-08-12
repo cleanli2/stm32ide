@@ -1320,7 +1320,7 @@ HAL_StatusTypeDef HAL_SPI_TransmitReceive(SPI_HandleTypeDef *hspi, const uint8_t
       }
 #endif /* USE_SPI_CRC */
     }
-    while ((hspi->TxXferCount > 0U) || (hspi->RxXferCount > 0U))
+    while ((hspi->RxXferCount > 0U))
     {
       /* Check TXE flag */
       if ((__HAL_SPI_GET_FLAG(hspi, SPI_FLAG_TXE)) && (hspi->TxXferCount > 0U) && (txallowed == 1U))
@@ -1349,12 +1349,14 @@ HAL_StatusTypeDef HAL_SPI_TransmitReceive(SPI_HandleTypeDef *hspi, const uint8_t
         /* Next Data is a Transmission (Tx). Tx is allowed */
         txallowed = 1U;
       }
+#if 0
       if ((((HAL_GetTick() - tickstart) >=  Timeout) && ((Timeout != HAL_MAX_DELAY))) || (Timeout == 0U))
       {
         hspi->State = HAL_SPI_STATE_READY;
         __HAL_UNLOCK(hspi);
         return HAL_TIMEOUT;
       }
+#endif
     }
   }
 

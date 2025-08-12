@@ -117,7 +117,8 @@ DRESULT USER_read (
 )
 {
   /* USER CODE BEGIN READ */
-    printk("sdread sec=%d, count=%d\r\n", sector, count);
+    //printk("sdread sec=%d, count=%d\r\n", sector, count);
+    //printk(">");
 	return USER_SPI_read(pdrv, buff, sector, count);
   /* USER CODE END READ */
 }

@@ -36,7 +36,7 @@ extern SPI_HandleTypeDef SD_SPI_HANDLE;
 
 //(Note that the _256 is used as a mask to clear the prescalar bits as it provides binary 111 in the correct position)
 #define FCLK_SLOW() { MODIFY_REG(SD_SPI_HANDLE.Instance->CR1, SPI_BAUDRATEPRESCALER_256, SPI_BAUDRATEPRESCALER_128); }	/* Set SCLK = slow, approx 280 KBits/s*/
-#define FCLK_FAST() { MODIFY_REG(SD_SPI_HANDLE.Instance->CR1, SPI_BAUDRATEPRESCALER_256, SPI_BAUDRATEPRESCALER_8); }	/* Set SCLK = fast, approx 4.5 MBits/s */
+#define FCLK_FAST() { MODIFY_REG(SD_SPI_HANDLE.Instance->CR1, SPI_BAUDRATEPRESCALER_256, SPI_BAUDRATEPRESCALER_4); }	/* Set SCLK = fast, approx 1.5MBits/s */
 
 #define CS_HIGH()	{HAL_GPIO_WritePin(SD_CS_GPIO_Port, SD_CS_Pin, GPIO_PIN_SET);}
 #define CS_LOW()	{HAL_GPIO_WritePin(SD_CS_GPIO_Port, SD_CS_Pin, GPIO_PIN_RESET);}
@@ -111,6 +111,7 @@ BYTE xchg_spi (
 }
 
 
+char dmdt[512];
 /* Receive multiple byte */
 static
 void rcvr_spi_multi (
@@ -118,9 +119,13 @@ void rcvr_spi_multi (
 	UINT btr		/* Number of bytes to receive (even number) */
 )
 {
+#if 0
 	for(UINT i=0; i<btr; i++) {
 		*(buff+i) = xchg_spi(0xFF);
 	}
+#endif
+    memset(dmdt, 0xff, 512);
+    HAL_SPI_TransmitReceive(&SD_SPI_HANDLE, &dmdt, buff, btr, 50);
 }
 
 
